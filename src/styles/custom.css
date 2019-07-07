@@ -1,0 +1,20 @@
+.sms-button{
+    background-color: #f4738f;
+    border: 1px solid #f4738f;
+}
+
+.sms-button:hover{
+    background-color: #f4738f;
+    border: 1px solid #f4738f;
+}
+
+
+.email-button{
+    background-color: #009dfb;
+    border: 1px solid #009dfb;
+}
+
+.email-button:hover{
+    background-color: #009dfb;
+    border: 1px solid #009dfb;
+}
