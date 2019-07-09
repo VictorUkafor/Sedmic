@@ -1,40 +1,72 @@
 import React from 'react';
+import Input from '../components/Field/Input';
+import Select from '../components/Field/Select';
+import Phone from '../components/Field/Phone';
+import Image from '../components/Field/Image';
+import Button from '../components/Field/Button';
+import Form from '../components/Field/Form';
 
-const CompleteSignup = () => (
-  <div className="kt-login__signin">
-    <div className="kt-login__head">
-      <h3 className="kt-login__title">Step 3 - Complete User Registration</h3>
-    </div>
-    <div className="kt-login__form">
-      <form className="kt-form" action="#">
-        <div className="form-group">
-          <input className="form-control" type="text" placeholder="Enter verification code" name="verification_code" autoComplete="off" />
-        </div>
-        <div className="form-group">
-          <input className="form-control" type="text" placeholder="Enter your full_name" name="full_name" autoComplete="off" />
-        </div>
-        <div className="form-group">
-          <input className="form-control" type="email" placeholder="Enter your email address" name="email" autoComplete="off" />
-        </div>
-        <div className="form-group">
-          <div className="input-group-prepend"><span className="input-group-text">234</span>
-            <input className="form-control" type="text" placeholder="   Enter your mobile number" name="mobile_number" autoComplete="off" />
-          </div>
-        </div>
+const CompleteSignup = (props) => {
+  const { token } = props;
 
-        <div className="form-group">
-          <input className="form-control" type="password" placeholder="Enter your password" name="password" autoComplete="off" />
-        </div>
-        <div className="form-group">
-          <input className="form-control" type="password" placeholder="Enter password confirmation" name="password_confirmation" autoComplete="off" />
-        </div>
+  return (
+    <Form
+      title="Step 3 - Complete User Registration"
+    >
 
-        <div className="kt-login__actions">
-          <button type="button" id="kt_login_signin_submit" className="btn btn-brand btn-pill btn-elevate email-button">Submit</button>
-        </div>
-      </form>
-    </div>
-  </div>
-);
+      {token ? ''
+        : (
+          <Input
+            placeholder="Enter verification code"
+            name="verification_code"
+          />
+        )}
+      <Input
+        placeholder="Enter your full name"
+        name="full_name"
+      />
+
+      { token ? (
+        <Phone
+          placeholder=" Enter your mobile number"
+          name="mobile_number"
+        />
+      ) : (
+        <Input
+          placeholder="Enter your email address"
+          name="email"
+          type="email"
+        />
+      )}
+
+      <Select
+        selectMessage="Choose your gender"
+        name="gender"
+        options={['Female', 'Male']}
+      />
+      <Input
+        placeholder="Enter your date of birth (format: 'yyyy-mm-dd')"
+        name="date_of_birth"
+      />
+      <Image
+        imageMessage="Upload your photo"
+        name="image"
+      />
+      <Input
+        placeholder="Enter your password"
+        name="password"
+        type="password"
+      />
+      <Input
+        placeholder="Enter password confirmation"
+        name="password_confirmation"
+        type="password"
+      />
+      <Button
+        value="Submit"
+      />
+    </Form>
+  );
+};
 
 export default CompleteSignup;

@@ -1,6 +1,7 @@
 .sms-button{
     background-color: #f4738f;
     border: 1px solid #f4738f;
+    float: right;
 }
 
 .sms-button:hover{
@@ -12,9 +13,24 @@
 .email-button{
     background-color: #009dfb;
     border: 1px solid #009dfb;
+    float: left;
 }
 
 .email-button:hover{
     background-color: #009dfb;
     border: 1px solid #009dfb;
 }
+
+.custom-file-label-auth {
+    border: 1px solid #fff;
+    margin-top: 5px;
+}
+
+
+.input-group-text {
+  border: 1px solid #fff; 
+  /* margin-top: 3px;
+  height: 45px; */
+  border-bottom: 1px solid rgba(235,237,242,.8);
+}
+
