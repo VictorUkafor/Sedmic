@@ -1,3 +1,13 @@
+body {
+    /* font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; */
+    font-family: Quicksand;
+  }
+
+
+  .kt-login.kt-login--v6 .btn {
+font-weight: 500;
+}
+
 .sms-button{
     background-color: #f4738f;
     border: 1px solid #f4738f;
@@ -29,8 +39,34 @@
 
 .input-group-text {
   border: 1px solid #fff; 
-  /* margin-top: 3px;
-  height: 45px; */
+  background-color: #fff;
   border-bottom: 1px solid rgba(235,237,242,.8);
 }
 
+
+
+.kt-login.kt-login--v6 .kt-login__aside .kt-login__wrapper {
+    height: 100vh;
+}
+
+.kt-login.kt-login--v6 .btn {
+    padding-left: 2.5rem;
+    padding-right: 2.5rem;
+}
+
+
+.kt-login.kt-login--v6 .kt-login__aside .kt-login__wrapper .kt-login__container .kt-login__head .kt-login__title {
+    color: #000;
+    font-weight: 800;
+}
+
+.kt-login.kt-login--v6 .kt-login__aside .kt-login__wrapper .kt-login__container .kt-login__head .kt-login__desc {
+    color: #000;
+    font-weight: 800;
+}
+
+
+.kt-login.kt-login--v6 .kt-login__aside .kt-login__wrapper .kt-login__container .kt-login__form .form-control {
+    color: #000;
+    font-weight: 1000;
+}

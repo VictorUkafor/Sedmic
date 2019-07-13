@@ -1,3 +1,7 @@
 export default {
-  user: '',
+  location: {},
+  username: '',
+  successMessage: '',
+  errorMessage: '',
+  checks: [],
 };

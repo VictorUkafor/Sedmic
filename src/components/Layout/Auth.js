@@ -5,10 +5,10 @@ import logo from '../../assets/media/company-logos/logo-2.png';
 
 
 const Auth = (props) => {
-  const { children } = props;
+  const { children, login } = props;
 
   return (
-    <div className="kt-quick-panel--right kt-demo-panel--right kt-offcanvas-panel--right kt-header--fixed kt-header-mobile--fixed kt-subheader--enabled kt-subheader--transparent kt-aside--enabled kt-aside--fixed kt-page--loading">
+    <div className="kt-quick-panel--right kt-demo-panel--right kt-offcanvas-panel--right kt-header--fixed kt-header-mobile--fixed kt-subheader--enabled kt-subheader--transparent kt-aside--enabled kt-aside--fixed kt-page--loading full-page">
 
       <div className="kt-grid kt-grid--ver kt-grid--root kt-page">
         <div className="kt-grid kt-grid--hor kt-grid--root  kt-login kt-login--v6 kt-login--signin" id="kt_login">
@@ -26,7 +26,8 @@ const Auth = (props) => {
                   </div>
                 </div>
 
-                <AuthSignup />
+
+                {login && <AuthSignup />}
 
               </div>
             </div>

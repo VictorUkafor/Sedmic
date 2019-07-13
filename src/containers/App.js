@@ -9,18 +9,16 @@ import VerificationTypePage from '../views/VerificationTypePage';
 import CompleteSignupPage from '../views/CompleteSignupPage';
 import '../styles/styles.css';
 
-const App = () => (
+export default () => (
   <BrowserRouter>
     <div>
       <Route exact path="/" component={Index} />
       <Route exact path="/signup" component={SignupPage} />
       <Route exact path="/login" component={LoginPage} />
-      <Route exact path="/account-verification/:field" component={VerificationTypePage} />
+      <Route exact path="/account-verification-option/:field" component={VerificationTypePage} />
       <Route exact path="/forgot-password" component={ForgotPasswordPage} />
       <Route exact path="/reset-password" component={ResetPasswordPage} />
-      <Route exact path="/complete-user-registration" component={CompleteSignupPage} />
+      <Route exact path="/account-activation" component={CompleteSignupPage} />
     </div>
   </BrowserRouter>
 );
-
-export default App;

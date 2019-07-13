@@ -16,7 +16,7 @@ export default (props) => {
   return (
     <div className="form-group">
       <select className="custom-select form-control" name={name}>
-        <option selected value="">{selectMessage}</option>
+        <option value="">{selectMessage}</option>
         {selects}
       </select>
     </div>

@@ -11,7 +11,7 @@ const CompleteSignup = (props) => {
 
   return (
     <Form
-      title="Step 3 - Complete User Registration"
+      title="Step 3 - Complete Account Registration"
     >
 
       {token ? ''
