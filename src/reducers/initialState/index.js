@@ -1,7 +1,17 @@
 export default {
   location: {},
-  username: '',
+  username: localStorage.getItem('username') || '',
   successMessage: '',
   errorMessage: '',
   checks: [],
+  setCode: localStorage.getItem('setCode') || false,
+  tokenUser: {},
+  user: {},
+  auth: false,
+  reset: false,
+  tokenSent: localStorage.getItem('tokenSent') || false,
+  linkSent: localStorage.getItem('linkSent') || false,
+  churchCreated: localStorage.getItem('churchCreated') || false,
+  isSignup: localStorage.getItem('isSignup') || false,
+  activationToken: localStorage.getItem('activation_token') || null,
 };

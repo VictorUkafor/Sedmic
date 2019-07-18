@@ -33,11 +33,82 @@ export default (state = initialState, action) => {
         successMessage: '',
         errorMessage: '',
       };
-
-    case types.CLEAR_USERNAME:
+    case types.VERIFY_TOKEN:
       return {
         ...state,
-        username: '',
+        tokenUser: action.payload,
+      };
+    case types.VERIFY_TOKEN_ERROR:
+      return {
+        ...state,
+        errorMessage: action.payload,
+      };
+    case types.VERIFY_CODE:
+      return {
+        ...state,
+        tokenUser: action.payload,
+      };
+    case types.VERIFY_CODE_ERROR:
+      return {
+        ...state,
+        errorMessage: action.payload,
+      };
+    case types.SIGNUP_USER:
+      return {
+        ...state,
+        successMessage: action.payload,
+      };
+    case types.SIGNUP_USER_ERROR:
+      return {
+        ...state,
+        errorMessage: action.payload,
+      };
+    case types.LOGIN_USER:
+      return {
+        ...state,
+        auth: true,
+      };
+    case types.LOGIN_USER_ERROR:
+      return {
+        ...state,
+        errorMessage: action.payload,
+      };
+    case types.LOGOUT:
+      return {
+        ...state,
+        user: {},
+      };
+    case types.FORGOT_PASSWORD:
+      return {
+        ...state,
+        successMessage: action.payload,
+        linkSent: true,
+      };
+    case types.FORGOT_PASSWORD_ERROR:
+      return {
+        ...state,
+        errorMessage: action.payload,
+      };
+    case types.FIND_RESET:
+      return {
+        ...state,
+        reset: true,
+      };
+    case types.FIND_RESET_ERROR:
+      return {
+        ...state,
+        errorMessage: action.payload,
+      };
+    case types.RESET_PASSWORD:
+      return {
+        ...state,
+        successMessage: action.payload,
+        linkSent: false,
+      };
+    case types.RESET_PASSWORD_ERROR:
+      return {
+        ...state,
+        errorMessage: action.payload,
       };
     default:
       return state;

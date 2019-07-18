@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { signup, clearMessage, clearUsername } from '../actions/authActions';
+import { signup, clearMessage } from '../actions/authActions';
 import { validatePhone, validateEmail } from '../libs/validations';
 import { locationInfo } from '../actions/locationActions';
 import Input from '../components/Field/Input';
@@ -21,11 +21,16 @@ class VerifyType extends Component {
   componentDidMount = () => {
     const {
       clearMessage: message, history,
-      locationInfo: geoInfo, field, username,
+      locationInfo: geoInfo, field,
+      username, tokenSent, setCode,
     } = this.props;
 
     if (!username) {
-      return history.push('/signup');
+      history.push('/signup');
+    }
+
+    if (tokenSent && setCode) {
+      history.push('/account-verification');
     }
 
     message();
@@ -39,8 +44,36 @@ class VerifyType extends Component {
   }
 
 
+  switchToSMS = (event) => {
+    event.preventDefault();
+    const { clearMessage: clear } = this.props;
+
+    clear();
+    this.setState(initialState);
+
+    const { history } = this.props;
+    history.push('/account-verification-option/SMS');
+  }
+
+
+  switchToEmail = (event) => {
+    event.preventDefault();
+    const { clearMessage: clear } = this.props;
+
+    clear();
+    this.setState(initialState);
+
+    const { history } = this.props;
+    history.push('/account-verification-option/Email');
+  }
+
+
   processMobile = () => {
     const { mobileNumber } = this.state;
+    const { clearMessage: clear } = this.props;
+
+    clear();
+
     const validation = validatePhone(mobileNumber.trim());
     const { message, status } = validation;
     this.setState({ error: message });
@@ -51,6 +84,10 @@ class VerifyType extends Component {
 
   processEmail = () => {
     const { email } = this.state;
+    const { clearMessage: clear } = this.props;
+
+    clear();
+
     const validation = validateEmail(email.trim());
     const { message, status } = validation;
     this.setState({ error: message });
@@ -64,9 +101,11 @@ class VerifyType extends Component {
 
     const {
       signup: verification,
-      clearUsername: usernameClear,
       field, username, history,
+      clearMessage: clear,
     } = this.props;
+
+    clear();
 
     const { mobileNumber, email } = this.state;
 
@@ -89,16 +128,12 @@ class VerifyType extends Component {
 
     if (checkStatus) {
       this.setState({ isLoading: true });
-      verification(body).then((res) => {
+      verification(body).then(() => {
         this.setState(initialState);
-        usernameClear();
         if (body.phone) {
-          return history.push('/account-activation');
+          history.push('/account-verification');
         }
-      }).catch((e) => {
-        this.setState(initialState);
-        usernameClear();
-      });
+      }).catch(() => this.setState({ isLoading: false }));
     }
   }
 
@@ -106,51 +141,61 @@ class VerifyType extends Component {
   render() {
     const {
       field, location, successMessage,
-      errorMessage, username,
+      errorMessage, username, tokenSent,
     } = this.props;
     const {
       mobileNumber, email, error, isLoading,
     } = this.state;
 
+    const submit = field === 'SMS' ? 'Next' : 'Submit';
+
     return (
       <Form
-        title={username && `Step 2 - Using ${field} for Verification`}
+        title={username && !tokenSent && `Step 2 - Using ${field} for Verification`}
         handleSubmit={this.handleSubmit}
-        successMessage={successMessage}
+        successMessage={!tokenSent ? successMessage : 'Check your email for a verification link'}
         errorMessage={errorMessage}
       >
-        {username && field === 'SMS'
-      && (
-        <Phone
-          placeholder=" Enter your mobile number"
-          name="mobileNumber"
-          value={mobileNumber}
-          location={location}
-          error={error}
-          onKey={this.processMobile}
-          handleChange={this.handleChange}
-        />
-      )
-        }
+        {username && field === 'SMS' && !tokenSent
+        && (
+          <Phone
+            placeholder=" Enter your mobile number"
+            name="mobileNumber"
+            value={mobileNumber}
+            location={location}
+            error={error}
+            onKey={this.processMobile}
+            handleChange={this.handleChange}
+          />
+        )}
 
-        {username && field === 'Email'
-      && (
-        <Input
-          placeholder="Enter your email address"
-          name="email"
-          type="email"
-          value={email}
-          error={error}
-          onKey={this.processEmail}
-          handleChange={this.handleChange}
-        />
-      )
-        }
+        {username && field === 'Email' && !tokenSent
+        && (
+          <Input
+            placeholder="Enter your email address"
+            name="email"
+            type="email"
+            value={email}
+            error={error}
+            onKey={this.processEmail}
+            handleChange={this.handleChange}
+          />
+        )}
 
 
-        {username && (
+        {username && !tokenSent && (
           <Button
-            value={isLoading ? 'Loading . . .' : 'Submit'}
+            value={field === 'SMS' ? 'Use Email Verification' : 'Use SMS Verification'}
+            styleName={field === 'SMS' ? 'email-button' : 'sms-button'}
+            onClick={field === 'SMS' ? this.switchToEmail : this.switchToSMS}
+          />
+        )}
+
+
+        {username && !tokenSent && (
+          <Button
+            value={isLoading ? 'Loading . . .' : submit}
+            styleName={field === 'SMS' ? 'sms-button' : 'email-button'}
             disabled={isLoading}
           />
         )}
@@ -166,10 +211,14 @@ function mapStateToProps(state) {
     successMessage: state.auth.successMessage,
     errorMessage: state.auth.errorMessage,
     location: state.location.location,
+    tokenSent: state.auth.tokenSent,
+    setCode: state.auth.setCode,
   };
 }
 
 export default connect(mapStateToProps,
   {
-    locationInfo, signup, clearMessage, clearUsername,
+    locationInfo,
+    signup,
+    clearMessage,
   })(VerifyType);

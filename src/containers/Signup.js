@@ -6,12 +6,23 @@ import Input from '../components/Field/Input';
 import Button from '../components/Field/Button';
 import Form from '../components/Field/Form';
 
+const initialState = {
+  username: '', error: '',
+};
 
 class Signup extends Component {
-  state = { username: '', error: '' }
+  state = initialState;
 
   componentDidMount = () => {
-    const { fetchUsernames: getUsernames } = this.props;
+    const {
+      fetchUsernames: getUsernames,
+      username, history,
+    } = this.props;
+
+    if (username) {
+      history.push('/account-verification-option/Email');
+    }
+
     getUsernames();
     document.title = 'Sedmic - Let\'s Get You Started';
   }
@@ -34,29 +45,30 @@ class Signup extends Component {
   }
 
 
-  usingSMS = () => {
+  usingSMS = (event) => {
+    event.preventDefault();
+
     const { getUsername: setUsername, history } = this.props;
     const { username, status } = this.processUsername();
 
     if (status) {
       setUsername(username, () => history.push('/account-verification-option/SMS'));
-      this.setState({ username: '', error: '' });
+      this.setState(initialState);
     }
   }
 
 
-  usingEmail = () => {
+  usingEmail = (event) => {
+    event.preventDefault();
+
     const { getUsername: setUsername, history } = this.props;
     const { username, status } = this.processUsername();
 
     if (status) {
-      setUsername(username.trim(), () => history.push('/account-verification-option/Email'));
-      this.setState({ username: '', error: '' });
+      setUsername(username.trim(),
+        () => history.push('/account-verification-option/Email'));
+      this.setState(initialState);
     }
-
-    const { usernames } = this.props;
-
-    console.log('form ,,,,,,,', usernames);
   }
 
 
@@ -94,6 +106,7 @@ class Signup extends Component {
 function mapStateToProps(state) {
   return {
     usernames: state.auth.checks,
+    username: state.auth.username,
   };
 }
 

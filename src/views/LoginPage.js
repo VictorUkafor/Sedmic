@@ -4,7 +4,7 @@ import Login from '../containers/Login';
 
 
 export default (props) => (
-  <Auth login="true">
+  <Auth>
     <Login {...props} />
   </Auth>
 );

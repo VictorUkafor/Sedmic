@@ -1,10 +1,10 @@
 import React from 'react';
 import Auth from '../components/Layout/Auth';
-import CompleteSignup from '../containers/CompleteSignup';
+import ChurchRegistration from '../containers/ChurchRegistration';
 
 
 export default (props) => (
   <Auth>
-    <CompleteSignup {...props} />
+    <ChurchRegistration {...props} />
   </Auth>
 );

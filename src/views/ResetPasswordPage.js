@@ -3,8 +3,12 @@ import Auth from '../components/Layout/Auth';
 import ResetPassword from '../containers/ResetPassword';
 
 
-export default (props) => (
-  <Auth>
-    <ResetPassword {...props} />
-  </Auth>
-);
+export default (props) => {
+  const { match: { params: { token } } } = props;
+
+  return (
+    <Auth>
+      <ResetPassword token={token} {...props} />
+    </Auth>
+  );
+};

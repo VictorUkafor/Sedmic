@@ -1,10 +1,10 @@
 import React from 'react';
 import Auth from '../components/Layout/Auth';
-import CompleteSignup from '../containers/CompleteSignup';
+import Home from '../containers/Home';
 
 
 export default (props) => (
   <Auth>
-    <CompleteSignup {...props} />
+    <Home {...props} />
   </Auth>
 );
