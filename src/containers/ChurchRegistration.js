@@ -36,15 +36,12 @@ class ChurchRegistration extends Component {
 
   componentDidMount = () => {
     const {
-      clearMessage: message, history,
-      locationInfo: geoInfo, isSignup,
+      clearMessage: clear,
+      locationInfo: geoInfo,
     } = this.props;
 
-    if (!isSignup) {
-      history.push('/account-activation');
-    }
+    clear();
 
-    message();
     geoInfo();
     document.title = 'Sedmic - Church Registration';
   }
@@ -88,7 +85,7 @@ class ChurchRegistration extends Component {
     clear();
 
     const { churchEmail } = this.state;
-    const validation = validateEmail(churchEmail.trim(), false);
+    const validation = validateEmail(churchEmail.trim());
     const { message, status } = validation;
     this.setState({ errors: { churchEmail: message } });
 
@@ -177,13 +174,11 @@ class ChurchRegistration extends Component {
 
 
     if (checkStatus) {
+      const authToken = localStorage.getItem('authToken');
       this.setState({ isLoading: true });
-      church(body, () => history.push('/home'))
-        .then(() => {
-          this.setState(initialState);
-        }).then(() => {
-          this.setState(initialState);
-        });
+      church(body, authToken, () => history.push('/home'))
+        .then(() => this.setState(initialState))
+        .catch(() => this.setState({ isLoading: false }));
     }
   }
 
@@ -265,6 +260,7 @@ class ChurchRegistration extends Component {
         <Button
           value={isLoading ? 'Loading . . .' : 'Finish'}
           disabled={isLoading}
+          styleName="normal-button-2"
         />
       </Form>
     );
@@ -273,7 +269,7 @@ class ChurchRegistration extends Component {
 
 function mapStateToProps(state) {
   return {
-    isSignup: state.auth.isSignup,
+    auth: state.auth.auth,
     successMessage: state.auth.successMessage,
     errorMessage: state.auth.errorMessage,
     location: state.location.location,

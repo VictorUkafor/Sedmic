@@ -12,25 +12,18 @@ class Home extends Component {
   componentDidMount = () => {
     const {
       getProfile: profile,
-      clearMessage: message,
+      clearMessage: clear,
       user, history, auth,
     } = this.props;
 
-    message();
-    profile();
-
-    // if (!auth) {
-    //   history.push('/login');
-    // }
-
-    console.log('uerrrr', user);
+    console.log('loggggggggg', localStorage.getItem('auth'));
+    clear();
   }
 
   logout = (event) => {
-    const { history } = this.props;
+    const { history, logOut: logout } = this.props;
     event.preventDefault();
-    logOut();
-    history.push('/login');
+    logout().then(() => history.push('/login'));
   }
 
 
@@ -50,8 +43,6 @@ function mapStateToProps(state) {
   return {
     user: state.user.user,
     auth: state.user.auth,
-    successMessage: state.auth.successMessage,
-    errorMessage: state.auth.errorMessage,
   };
 }
 

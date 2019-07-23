@@ -3,11 +3,6 @@ import initialState from './initialState';
 
 export default (state = initialState, action) => {
   switch (action.type) {
-    case types.GET_USERNAME:
-      return {
-        ...state,
-        username: action.payload,
-      };
     case types.SEND_VERIFICATION:
       return {
         ...state,
@@ -16,27 +11,22 @@ export default (state = initialState, action) => {
     case types.SEND_VERIFICATION_ERROR:
       return {
         ...state,
-        errorMessage: action.payload,
-      };
-    case types.GET_USERNAMES:
-      return {
-        ...state,
-        checks: action.payload,
-      };
-    case types.GET_USERNAMES_ERROR:
-      return {
-        ...state,
+        errorMessage: action.payload.errorMessage || '',
+        errors: action.payload.errors || {},
       };
     case types.CLEAR_MESSAGES:
       return {
         ...state,
         successMessage: '',
         errorMessage: '',
+        errors: {},
       };
     case types.VERIFY_TOKEN:
       return {
         ...state,
         tokenUser: action.payload,
+        successMessage: '',
+        errorMessage: '',
       };
     case types.VERIFY_TOKEN_ERROR:
       return {
@@ -56,12 +46,13 @@ export default (state = initialState, action) => {
     case types.SIGNUP_USER:
       return {
         ...state,
-        successMessage: action.payload,
+        successMessage: action.payload.successMessage,
       };
     case types.SIGNUP_USER_ERROR:
       return {
         ...state,
-        errorMessage: action.payload,
+        errorMessage: action.payload.errorMessage || '',
+        errors: action.payload.errors || {},
       };
     case types.LOGIN_USER:
       return {

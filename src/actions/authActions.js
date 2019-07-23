@@ -3,15 +3,6 @@ import * as types from './actionTypes';
 
 const api = process.env.REACT_APP_BACKEND_API;
 
-export const getUsername = (username, callback) => async (dispatch) => {
-  localStorage.setItem('username', username);
-  dispatch({
-    type: types.GET_USERNAME,
-    payload: username,
-  });
-  callback();
-};
-
 
 export const clearMessage = () => async (dispatch) => {
   dispatch({
@@ -19,109 +10,87 @@ export const clearMessage = () => async (dispatch) => {
   });
 };
 
-export const fetchUsernames = () => async (dispatch) => {
+
+export const signup = (body, callback) => async (dispatch) => {
   try {
-    const response = await axios.get(`${api}/usernames`);
-
-    const usernames = response.data.usernames.map((each) => btoa(each));
-    dispatch({
-      type: types.GET_USERNAMES,
-      payload: usernames,
-    });
-  } catch (e) {
-    dispatch({
-      type: types.GET_USERNAMES_ERROR,
-      payload: [],
-    });
-  }
-};
-
-
-export const signup = (body) => async (dispatch) => {
-  try {
-    await axios.post(`${api}/auth/signup`, body);
-    let message = '';
-    if (body.email) {
-      message = 'A verification email has been sent for the next step';
-    } else {
-      localStorage.setItem('setCode', true);
-      message = 'A verification code has been sent to your phone';
-    }
-
-
-    localStorage.removeItem('username');
-    localStorage.setItem('tokenSent', true);
+    const res = await axios.post(`${api}/auth/signup`, body);
 
     dispatch({
       type: types.SEND_VERIFICATION,
-      payload: message,
+      payload: res.data.successMessage,
     });
+
+    if (body.phone) {
+      callback();
+    }
   } catch (e) {
-    localStorage.removeItem('username');
     dispatch({
       type: types.SEND_VERIFICATION_ERROR,
-      payload: 'There was an error processing this request. Please try again',
+      payload: e.response.data,
     });
   }
 };
 
 
-export const signupViaEmail = (body, token) => async (dispatch) => {
+export const signupViaEmail = (body, token, callback) => async (dispatch) => {
   try {
     const res = await axios.post(`${api}/auth/confirm-email/${token}`, body);
 
-    localStorage.removeItem('tokenSent');
-
     if (res.data.user.account_type !== 'diamond') {
       dispatch({
         type: types.SIGNUP_USER,
         payload: res.data.successMessage,
       });
+
+      callback();
     }
 
     if (res.data.user.account_type === 'diamond') {
       localStorage.setItem('authToken', res.data.token);
-      localStorage.setItem('isSignup', true);
+      localStorage.setItem('auth', true);
 
       dispatch({
         type: types.LOGIN_USER,
+        payload: res.data,
       });
+
     }
   } catch (e) {
     dispatch({
       type: types.SIGNUP_USER_ERROR,
-      payload: e.response.data.errorMessage,
+      payload: e.response.data,
     });
   }
 };
 
 
-export const signupViaSMS = (body) => async (dispatch) => {
+export const signupViaSMS = (body, callback) => async (dispatch) => {
   try {
     const res = await axios.post(`${api}/auth/confirm-sms`, body);
-
-    localStorage.removeItem('tokenSent');
 
     if (res.data.user.account_type !== 'diamond') {
       dispatch({
         type: types.SIGNUP_USER,
         payload: res.data.successMessage,
       });
-    }
 
+    }
 
     if (res.data.user.account_type === 'diamond') {
       localStorage.setItem('authToken', res.data.token);
-      localStorage.setItem('isSignup', true);
+      localStorage.setItem('auth', true);
 
       dispatch({
         type: types.LOGIN_USER,
+        payload: res.data,
       });
+
+      callback();
     }
   } catch (e) {
     dispatch({
       type: types.SIGNUP_USER_ERROR,
-      payload: e.response.data.errorMessage,
+      payload: e.response.data,
     });
   }
 };
@@ -132,27 +101,23 @@ export const loginUser = (body, callback) => async (dispatch) => {
     const res = await axios.post(`${api}/auth/login`, body);
 
     localStorage.setItem('authToken', res.data.token);
+    localStorage.setItem('auth', true);
 
     dispatch({
       type: types.LOGIN_USER,
+      payload: res.data,
     });
 
     callback();
   } catch (e) {
     dispatch({
       type: types.LOGIN_USER_ERROR,
-      payload: e.response.data.errorMessage,
+      payload: e.response.data.errorMessage || 
+      'There was an error processing this request. Please try again',
     });
   }
 };
 
-
-export const clearSignup = () => (dispatch) => {
-  localStorage.removeItem('isSignup');
-  dispatch({
-    type: types.CLEAR_SIGNUP,
-  });
-};
 
 export const verifyToken = (token, callback) => async (dispatch) => {
   try {
@@ -163,6 +128,7 @@ export const verifyToken = (token, callback) => async (dispatch) => {
       type: types.VERIFY_TOKEN,
       payload: res.data.user,
     });
+
     callback();
   } catch (e) {
     dispatch({
@@ -173,18 +139,17 @@ export const verifyToken = (token, callback) => async (dispatch) => {
 };
 
 
-export const verifyCode = (code) => async (dispatch) => {
+export const verifyCode = (code, callback) => async (dispatch) => {
   try {
     const res = await axios.get(`${api}/auth/confirm-code?code=${code}`);
-    localStorage.setItem('setCode', false);
 
-    localStorage.removeItem('setCode');
     localStorage.setItem('activation_token', code);
 
     dispatch({
       type: types.VERIFY_CODE,
       payload: res.data.user,
     });
+    callback();
   } catch (e) {
     dispatch({
       type: types.VERIFY_CODE_ERROR,
@@ -195,10 +160,8 @@ export const verifyCode = (code) => async (dispatch) => {
 
 
 export const logOut = () => async (dispatch) => {
-  localStorage.removeItem('authToken');
-  dispatch({
-    type: types.LOGOUT,
-  });
+  localStorage.clear();
+  dispatch({ type: types.LOGOUT });
 };
 
 

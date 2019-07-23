@@ -10,7 +10,7 @@ import Form from '../components/Field/Form';
 const initialState = {
   username: '',
   error: '',
-  isLoading: false,
+  loading: false,
 };
 
 class ForgotPassword extends Component {
@@ -60,21 +60,25 @@ class ForgotPassword extends Component {
     const body = { username: username.trim() };
 
     if (status) {
-      this.setState({ isLoading: true });
+      this.setState({ loading: true });
       forgot(body)
         .then(() => {
           this.setState(initialState);
         })
-        .then(() => this.setState({ isLoading: false }));
+        .then(() => this.setState({ loading: false }));
     }
   }
 
 
   render() {
-    const { successMessage, errorMessage, linkSent } = this.props;
+    const {
+      successMessage,
+      errorMessage,
+      linkSent,
+    } = this.props;
 
     const {
-      error, username, isLoading,
+      error, username, loading,
     } = this.state;
 
 
@@ -94,12 +98,14 @@ class ForgotPassword extends Component {
             error={error}
             onKey={this.processUsername}
             handleChange={this.handleChange}
+            icon="fa fa-user"
           />
         )}
         {!linkSent && (
           <Button
-            value={isLoading ? 'Loading . . .' : 'Send Request'}
-            disabled={isLoading}
+            value={loading ? 'Loading . . .' : 'Send Request'}
+            disabled={loading || !username || error}
+            styleName="normal-button-2"
           />
         )}
       </Form>

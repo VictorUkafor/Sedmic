@@ -29,7 +29,11 @@ export default (props) => {
 
       </div>
       <div className="kt-login__form">
-        <form className="kt-form" action="#" onSubmit={handleSubmit}>
+        <form
+          className="kt-form"
+          method="post"
+          onSubmit={handleSubmit}
+        >
           {children}
         </form>
       </div>

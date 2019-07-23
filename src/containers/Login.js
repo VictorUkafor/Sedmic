@@ -15,7 +15,7 @@ const initialState = {
     email: '',
     password: '',
   },
-  isLoading: false,
+  loading: false,
 };
 
 class Login extends Component {
@@ -26,6 +26,7 @@ class Login extends Component {
     const {
       clearMessage: message,
     } = this.props;
+
 
     message();
     document.title = 'Sedmic - Login';
@@ -95,12 +96,12 @@ class Login extends Component {
     };
 
     if (checkStatus) {
-      this.setState({ isLoading: true });
+      this.setState({ loading: true });
       login(body, () => history.push('/home'))
         .then(() => {
           this.setState(initialState);
         })
-        .then(() => this.setState({ isLoading: false }));
+        .then(() => this.setState({ loading: false }));
     }
   }
 
@@ -109,7 +110,7 @@ class Login extends Component {
     const { successMessage, errorMessage } = this.props;
 
     const {
-      errors, username, password, isLoading,
+      errors, username, password, loading,
     } = this.state;
 
 
@@ -129,6 +130,7 @@ class Login extends Component {
           error={errors.username}
           onKey={this.processUsername}
           handleChange={this.handleChange}
+          icon="fa fa-user"
         />
 
         <Input
@@ -139,6 +141,7 @@ class Login extends Component {
           error={errors.password}
           onKey={this.processPassword}
           handleChange={this.handleChange}
+          icon="fa fa-lock"
         />
 
         <div className="kt-login__extra">
@@ -157,8 +160,10 @@ class Login extends Component {
         </div>
 
         <Button
-          value={isLoading ? 'Loading . . .' : 'Login'}
-          disabled={isLoading}
+          value={loading ? '  Loading . . .' : 'Login'}
+          disabled={!username || !password}
+          loading={loading}
+          styleName="normal-button-2"
         />
 
       </Form>

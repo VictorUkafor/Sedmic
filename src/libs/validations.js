@@ -1,4 +1,5 @@
-export const validateUsername = (username, allUsers = [], required = true) => {
+
+export const validateUsername = (username, required = true) => {
   if (!username.length) {
     return {
       message: 'Your username is required',
@@ -13,9 +14,9 @@ export const validateUsername = (username, allUsers = [], required = true) => {
     };
   }
 
-  if (required && allUsers.includes(btoa(username))) {
+  if (username.length > 30 && required) {
     return {
-      message: 'Username has been taken',
+      message: 'Username should not be more than 30 characters long',
       status: false,
     };
   }
@@ -26,6 +27,7 @@ export const validateUsername = (username, allUsers = [], required = true) => {
       status: false,
     };
   }
+
 
   return {
     message: '',
@@ -64,7 +66,7 @@ export const validateUsername2 = (name, length) => {
 };
 
 
-export const validatePhone = (phone, required = true) => {
+export const validatePhone = (phone, required = true, length = false) => {
   const numberFormat = /^\d+$/;
   if (!phone.length && required) {
     return {
@@ -76,6 +78,13 @@ export const validatePhone = (phone, required = true) => {
   if (phone.length && !numberFormat.test(phone)) {
     return {
       message: 'Mobile number must contain digits only',
+      status: false,
+    };
+  }
+
+  if (length && (phone.length < length)) {
+    return {
+      message: 'Mobile number must be 11 digits',
       status: false,
     };
   }
@@ -193,7 +202,7 @@ export const validateImage = (image, required = true) => {
 
 
 export const validateDOB = (date, required = true) => {
-  const dateFormat = /^(0?[1-9]|[12][0-9]|3[01])[\/\-](0?[1-9]|1[012])[\/\-]\d{4}$/;
+  const dateFormat = /^(0?[1-9]|[12][0-9]|3[01])[/](0?[1-9]|1[012])[/]\d{4}$/;
   if (!date.length && required) {
     return {
       message: 'Please enter your date of birth',
@@ -227,6 +236,13 @@ export const validatePassword = (password, check = true) => {
   if (password.length < 7 && check) {
     return {
       message: 'Your password must be atleast 7 characters',
+      status: false,
+    };
+  }
+
+  if (password.length > 30 && check) {
+    return {
+      message: 'Your password should not be more than 30 characters long',
       status: false,
     };
   }

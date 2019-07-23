@@ -3,21 +3,30 @@ import React from 'react';
 export default (props) => {
   const {
     type, placeholder, name, error,
-    handleChange, onKey,
+    handleChange, onKey, icon,
   } = props;
 
   return (
     <div className="form-group">
-      <input
-        className="form-control"
-        type={type || 'text'}
-        placeholder={placeholder}
-        name={name}
-        id={name}
-        onKeyUp={onKey}
-        onChange={handleChange}
-        autoComplete="off"
-      />
+      <div className="input-group">
+        {icon && (
+          <div className="input-group-prepend">
+            <span className="input-group-text" id="basic-addon2">
+              <i className={icon} />
+            </span>
+          </div>
+        )}
+        <input
+          className="form-control"
+          type={type || 'text'}
+          placeholder={placeholder}
+          name={name}
+          id={name}
+          onKeyUp={onKey}
+          onChange={handleChange}
+          autoComplete="off"
+        />
+      </div>
       {error && (
         <div
           className="alert alert-light"

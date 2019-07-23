@@ -144,6 +144,7 @@ class ResetPassword extends Component {
             error={errors.password}
             onKey={this.processPassword}
             handleChange={this.handleChange}
+            icon="fa fa-lock"
           />
         )}
         {linkSent && reset && (
@@ -155,12 +156,14 @@ class ResetPassword extends Component {
             error={errors.passwordConfirmation}
             onKey={this.processPasswordConfirmation}
             handleChange={this.handleChange}
+            icon="fa fa-lock"
           />
         )}
         {linkSent && reset && (
           <Button
             value={isLoading ? 'Loading . . .' : 'Reset Password'}
             disabled={isLoading}
+            styleName="normal-button-2"
           />
         )}
 
