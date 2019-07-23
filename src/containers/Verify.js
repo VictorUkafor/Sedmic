@@ -18,19 +18,8 @@ class Verify extends Component {
 
   componentDidMount = () => {
     const {
-      clearMessage: message, tokenSent, history,
-      verifyToken: verify, token,
+      clearMessage: message,
     } = this.props;
-
-
-    if (!token && !tokenSent) {
-      history.push('/account-verification-option/Email');
-    }
-
-    if (token) {
-      verify(token, () => history.push('/account-activation'));
-    }
-
 
     message();
     document.title = 'Sedmic - Verify Verification Code';
@@ -70,26 +59,24 @@ class Verify extends Component {
 
     if (status) {
       this.setState({ isLoading: true });
-      codeGet(`S-${code}`).then(() => {
-        this.setState(initialState);
-        return history.push('/account-activation');
-      }).catch(() => this.setState({ isLoading: false }));
+      codeGet(`S-${code}`, () => history.push('/account-activation'))
+        .then(() => this.setState({ isLoading: false }));
     }
   }
 
 
   render() {
-    const { setCode, errorMessage, token } = this.props;
+    const { setCode, errorMessage } = this.props;
     const { verificationCode, error, isLoading } = this.state;
 
     return (
       <Form
-        title={setCode && !token && 'Step 3 - Verify Verification Code'}
+        title={setCode && 'Step 3 - Verify Verification Code'}
         handleSubmit={this.handleSubmit}
         errorMessage={errorMessage}
       >
 
-        { setCode && !token && (
+        { setCode && (
           <Code
             placeholder="Enter verification code"
             name="verificationCode"
@@ -101,10 +88,11 @@ class Verify extends Component {
         ) }
 
 
-        {setCode && !token && (
+        {setCode && (
           <Button
             value={isLoading ? 'Loading . . .' : 'Verify Code'}
             disabled={isLoading}
+            styleName="normal-button-2"
           />
         )}
 

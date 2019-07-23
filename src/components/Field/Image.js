@@ -5,6 +5,7 @@ export default (props) => {
     imageMessage, name, onKey, handleChange, error, value,
   } = props;
 
+
   return (
     <div className="form-group custom-file">
       <input

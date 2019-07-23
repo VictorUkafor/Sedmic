@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import {
   signupViaEmail, signupViaSMS, clearMessage,
-  verifyToken,
+  verifyToken, verifyCode,
 } from '../actions/authActions';
 import {
   validatePhone, validateEmail, validateFullName,
@@ -24,7 +24,8 @@ const initialState = {
   email: '',
   dateOfBirth: '',
   gender: '',
-  image: '',
+  image: null,
+  file: '',
   password: '',
   passwordConfirmation: '',
   errors: {
@@ -45,19 +46,12 @@ class CompleteSignup extends Component {
 
   componentDidMount = () => {
     const {
-      clearMessage: message, history,
-      locationInfo: geoInfo, verifyToken: verify,
-      activationToken,
+      clearMessage: clear,
+      locationInfo: geoInfo,
     } = this.props;
 
+    clear();
 
-    if (!activationToken) {
-      history.push('/account-verification-option/Email');
-    }
-
-    verify(activationToken, () => history.push('/account-activation'));
-
-    message();
     geoInfo();
     document.title = 'Sedmic - Complete User Registration';
   }
@@ -67,6 +61,13 @@ class CompleteSignup extends Component {
     this.setState({ [event.target.id]: event.target.value });
   }
 
+
+  handleFile = (event) => {
+    this.setState({
+      image: event.target.files[0],
+      file: event.target.files[0].name,
+    });
+  }
 
   processFullName = () => {
     const { clearMessage: clear } = this.props;
@@ -142,8 +143,8 @@ class CompleteSignup extends Component {
 
     clear();
 
-    const { image } = this.state;
-    const validation = validateImage(image.trim(), false);
+    const { file } = this.state;
+    const validation = validateImage(file.trim());
     const { message, status } = validation;
     this.setState({ errors: { image: message } });
 
@@ -186,7 +187,6 @@ class CompleteSignup extends Component {
       signupViaSMS: signupSMS,
       history, tokenUser,
       clearMessage: clear,
-      activationToken,
     } = this.props;
 
     clear();
@@ -194,7 +194,7 @@ class CompleteSignup extends Component {
     const {
       fullName, email, mobileNumber,
       dateOfBirth, image, password, gender,
-      passwordConfirmation, errors,
+      passwordConfirmation,
     } = this.state;
 
     let checkStatus = true;
@@ -242,51 +242,40 @@ class CompleteSignup extends Component {
     let date = '';
     if (dateOfBirth.trim()) {
       const arr = dateOfBirth.split('/');
-      date = `${arr[2]}:${arr[1]}:${arr[0]}`;
+      date = `${arr[2]}-${arr[1]}-${arr[0]}`;
     }
 
-    const body = {
-      full_name: fullName.trim(),
-      phone: mobileNumber.trim() || tokenUser.phone,
-      email: email.trim() || tokenUser.email,
-      image: '',
-      sex: gender.trim(),
-      verification_code: activationToken,
-      date_of_birth: date,
-      password: password.trim(),
-      password_confirmation: passwordConfirmation.trim(),
-    };
+
+    const body = new FormData();
+    body.append('full_name', fullName.trim());
+    body.append('phone', mobileNumber.trim() || tokenUser.phone);
+    body.append('email', email.trim() || tokenUser.email);
+    body.append('sex', gender.trim());
+    body.append('image', image);
+    body.append('date_of_birth', date);
+    body.append('password', password.trim());
+    body.append('password_confirmation', passwordConfirmation.trim());
+
 
     if (checkStatus) {
+      const token = localStorage.getItem('activation_token');
       this.setState({ isLoading: true });
 
       if (tokenUser.email) {
-        signupEmail(body, activationToken).then(() => {
-          this.setState(initialState);
-
-          if (tokenUser.account_type === 'diamond') {
-            history.push('/church-registration');
-          }
-
-          if (tokenUser.account_type !== 'diamond') {
-            history.push('/login');
-          }
-        }).then(() => this.setState({ isLoading: false }));
+        signupEmail(body, token,
+          () => history.push('/church-registration'),
+          () => history.push('/login'))
+          .then(() => this.setState({ isLoading: false }))
+          .catch(() => this.setState({ isLoading: false }));
       }
 
-
       if (tokenUser.phone) {
-        signupSMS(body).then(() => {
-          this.setState(initialState);
-
-          if (tokenUser.account_type === 'diamond') {
-            history.push('/church-registration');
-          }
-
-          if (tokenUser.account_type !== 'diamond') {
-            history.push('/login');
-          }
-        }).then(() => this.setState({ isLoading: false }));
+        body.append('verification_code', token);
+        signupSMS(body,
+          () => history.push('/church-registration'),
+          () => history.push('/login'))
+          .then(() => this.setState({ isLoading: false }))
+          .catch(() => this.setState({ isLoading: false }));
       }
     }
   }
@@ -294,12 +283,13 @@ class CompleteSignup extends Component {
 
   render() {
     const {
-      successMessage, errorMessage, location, tokenUser,
+      successMessage, errorMessage,
+      location, tokenUser,
     } = this.props;
 
     const {
       errors, fullName, email, mobileNumber,
-      dateOfBirth, image, password, gender,
+      dateOfBirth, password, gender,
       passwordConfirmation, isLoading,
     } = this.state;
 
@@ -324,7 +314,7 @@ class CompleteSignup extends Component {
 
         { tokenUser.email && (
           <Phone
-            placeholder=" Enter your mobile number"
+            placeholder="Enter your mobile number"
             name="mobileNumber"
             value={mobileNumber}
             location={location}
@@ -365,10 +355,8 @@ class CompleteSignup extends Component {
         <Image
           imageMessage="Upload your photo"
           name="image"
-          value={image}
           error={errors.image}
-          onKey={this.processImage}
-          handleChange={this.handleChange}
+          handleChange={this.handleFile}
         />
         <Input
           placeholder="Enter your password"
@@ -391,6 +379,7 @@ class CompleteSignup extends Component {
         <Button
           value={isLoading ? 'Loading . . .' : 'Complete Signup'}
           disabled={isLoading}
+          styleName="normal-button-2"
         />
       </Form>
     );
@@ -399,7 +388,7 @@ class CompleteSignup extends Component {
 
 function mapStateToProps(state) {
   return {
-    activationToken: state.auth.activationToken,
+    setCode: state.auth.setCode,
     tokenUser: state.auth.tokenUser,
     successMessage: state.auth.successMessage,
     errorMessage: state.auth.errorMessage,
@@ -414,4 +403,5 @@ export default connect(mapStateToProps,
     signupViaSMS,
     clearMessage,
     verifyToken,
+    verifyCode,
   })(CompleteSignup);

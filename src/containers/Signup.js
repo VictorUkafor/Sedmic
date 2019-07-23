@@ -16,12 +16,7 @@ class Signup extends Component {
   componentDidMount = () => {
     const {
       fetchUsernames: getUsernames,
-      username, history,
     } = this.props;
-
-    if (username) {
-      history.push('/account-verification-option/Email');
-    }
 
     getUsernames();
     document.title = 'Sedmic - Let\'s Get You Started';
@@ -90,12 +85,12 @@ class Signup extends Component {
         />
         <Button
           value="Verification via SMS"
-          styleName="sms-button"
+          styleName="normal-button-2 sms-button"
           onClick={this.usingSMS}
         />
         <Button
           value="Verification via Email"
-          styleName="email-button"
+          styleName="normal-button-2 email-button"
           onClick={this.usingEmail}
         />
       </Form>
@@ -106,7 +101,6 @@ class Signup extends Component {
 function mapStateToProps(state) {
   return {
     usernames: state.auth.checks,
-    username: state.auth.username,
   };
 }
 

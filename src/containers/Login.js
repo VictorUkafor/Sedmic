@@ -27,6 +27,7 @@ class Login extends Component {
       clearMessage: message,
     } = this.props;
 
+
     message();
     document.title = 'Sedmic - Login';
   }
@@ -159,6 +160,7 @@ class Login extends Component {
         <Button
           value={isLoading ? 'Loading . . .' : 'Login'}
           disabled={isLoading}
+          styleName="normal-button-2"
         />
 
       </Form>
