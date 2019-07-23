@@ -161,6 +161,7 @@ class ResetPassword extends Component {
           <Button
             value={isLoading ? 'Loading . . .' : 'Reset Password'}
             disabled={isLoading}
+            styleName="normal-button-2"
           />
         )}
 

@@ -100,6 +100,7 @@ class ForgotPassword extends Component {
           <Button
             value={isLoading ? 'Loading . . .' : 'Send Request'}
             disabled={isLoading}
+            styleName="normal-button-2"
           />
         )}
       </Form>

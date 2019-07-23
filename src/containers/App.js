@@ -1,5 +1,11 @@
 import React from 'react';
 import { BrowserRouter, Route } from 'react-router-dom';
+import Authentication from './HOC/Authentication';
+import AuthSignup from './HOC/AuthSignup';
+import AuthSignType from './HOC/AuthSignType';
+import AuthSignVerify from './HOC/AuthSignVerify';
+import AuthComplete from './HOC/AuthComplete';
+import NotAuth from './HOC/NotAuth';
 import Index from '../views/Index';
 import LoginPage from '../views/LoginPage';
 import SignupPage from '../views/SignupPage';
@@ -16,15 +22,15 @@ export default () => (
   <BrowserRouter>
     <div>
       <Route exact path="/" component={Index} />
-      <Route exact path="/signup" component={SignupPage} />
+      <Route exact path="/signup" component={AuthSignup(SignupPage)} />
       <Route exact path="/login" component={LoginPage} />
-      <Route exact path="/account-verification-option/:field" component={VerificationTypePage} />
-      <Route exact path="/forgot-password" component={ForgotPasswordPage} />
-      <Route exact path="/reset-password/:token" component={ResetPasswordPage} />
-      <Route exact path="/account-verification" component={VerifyPage} />
-      <Route exact path="/account-activation" component={CompleteSignupPage} />
-      <Route exact path="/church-registration" component={ChurchRegistrationPage} />
-      <Route exact path="/home" component={HomePage} />
+      <Route exact path="/account-verification-option/:field" component={AuthSignType(VerificationTypePage)} />
+      <Route exact path="/forgot-password" component={NotAuth(ForgotPasswordPage)} />
+      <Route exact path="/reset-password/:token" component={NotAuth(ResetPasswordPage)} />
+      <Route exact path="/account-verification" component={AuthSignVerify(VerifyPage)} />
+      <Route exact path="/account-activation" component={AuthComplete(CompleteSignupPage)} />
+      <Route exact path="/church-registration" component={Authentication(ChurchRegistrationPage)} />
+      <Route exact path="/home" component={Authentication(HomePage)} />
     </div>
   </BrowserRouter>
 );

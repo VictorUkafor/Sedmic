@@ -37,25 +37,22 @@ export const fetchUsernames = () => async (dispatch) => {
 };
 
 
-export const signup = (body) => async (dispatch) => {
+export const signup = (body, callback) => async (dispatch) => {
   try {
     await axios.post(`${api}/auth/signup`, body);
-    let message = '';
-    if (body.email) {
-      message = 'A verification email has been sent for the next step';
-    } else {
-      localStorage.setItem('setCode', true);
-      message = 'A verification code has been sent to your phone';
-    }
-
 
     localStorage.removeItem('username');
     localStorage.setItem('tokenSent', true);
 
     dispatch({
       type: types.SEND_VERIFICATION,
-      payload: message,
+      payload: body.phone,
     });
+
+    if (body.phone) {
+      localStorage.setItem('setCode', true);
+      callback();
+    }
   } catch (e) {
     localStorage.removeItem('username');
     dispatch({
@@ -66,7 +63,7 @@ export const signup = (body) => async (dispatch) => {
 };
 
 
-export const signupViaEmail = (body, token) => async (dispatch) => {
+export const signupViaEmail = (body, token, callback1, callback2) => async (dispatch) => {
   try {
     const res = await axios.post(`${api}/auth/confirm-email/${token}`, body);
 
@@ -77,15 +74,20 @@ export const signupViaEmail = (body, token) => async (dispatch) => {
         type: types.SIGNUP_USER,
         payload: res.data.successMessage,
       });
+
+      callback2();
     }
 
     if (res.data.user.account_type === 'diamond') {
       localStorage.setItem('authToken', res.data.token);
-      localStorage.setItem('isSignup', true);
+      localStorage.setItem('auth', true);
 
       dispatch({
         type: types.LOGIN_USER,
+        payload: res.data,
       });
+
+      callback1();
     }
   } catch (e) {
     dispatch({
@@ -96,27 +98,33 @@ export const signupViaEmail = (body, token) => async (dispatch) => {
 };
 
 
-export const signupViaSMS = (body) => async (dispatch) => {
+export const signupViaSMS = (body, callback1, callback2) => async (dispatch) => {
   try {
     const res = await axios.post(`${api}/auth/confirm-sms`, body);
 
     localStorage.removeItem('tokenSent');
+    localStorage.removeItem('setCode');
 
     if (res.data.user.account_type !== 'diamond') {
       dispatch({
         type: types.SIGNUP_USER,
         payload: res.data.successMessage,
       });
+
+      callback2();
     }
 
 
     if (res.data.user.account_type === 'diamond') {
       localStorage.setItem('authToken', res.data.token);
-      localStorage.setItem('isSignup', true);
+      localStorage.setItem('auth', true);
 
       dispatch({
         type: types.LOGIN_USER,
+        payload: res.data,
       });
+
+      callback1();
     }
   } catch (e) {
     dispatch({
@@ -132,27 +140,22 @@ export const loginUser = (body, callback) => async (dispatch) => {
     const res = await axios.post(`${api}/auth/login`, body);
 
     localStorage.setItem('authToken', res.data.token);
+    localStorage.setItem('auth', true);
 
     dispatch({
       type: types.LOGIN_USER,
+      payload: res.data,
     });
 
     callback();
   } catch (e) {
     dispatch({
       type: types.LOGIN_USER_ERROR,
-      payload: e.response.data.errorMessage,
+      payload: e.response.data.errorMessage || 'There was an error processing this request. Please try again',
     });
   }
 };
 
-
-export const clearSignup = () => (dispatch) => {
-  localStorage.removeItem('isSignup');
-  dispatch({
-    type: types.CLEAR_SIGNUP,
-  });
-};
 
 export const verifyToken = (token, callback) => async (dispatch) => {
   try {
@@ -163,6 +166,7 @@ export const verifyToken = (token, callback) => async (dispatch) => {
       type: types.VERIFY_TOKEN,
       payload: res.data.user,
     });
+
     callback();
   } catch (e) {
     dispatch({
@@ -173,18 +177,17 @@ export const verifyToken = (token, callback) => async (dispatch) => {
 };
 
 
-export const verifyCode = (code) => async (dispatch) => {
+export const verifyCode = (code, callback) => async (dispatch) => {
   try {
     const res = await axios.get(`${api}/auth/confirm-code?code=${code}`);
-    localStorage.setItem('setCode', false);
 
-    localStorage.removeItem('setCode');
     localStorage.setItem('activation_token', code);
 
     dispatch({
       type: types.VERIFY_CODE,
       payload: res.data.user,
     });
+    callback();
   } catch (e) {
     dispatch({
       type: types.VERIFY_CODE_ERROR,
@@ -195,10 +198,8 @@ export const verifyCode = (code) => async (dispatch) => {
 
 
 export const logOut = () => async (dispatch) => {
-  localStorage.removeItem('authToken');
-  dispatch({
-    type: types.LOGOUT,
-  });
+  localStorage.clear();
+  dispatch({ type: types.LOGOUT });
 };
 
 

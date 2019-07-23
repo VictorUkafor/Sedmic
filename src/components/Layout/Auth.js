@@ -1,7 +1,6 @@
 import React from 'react';
 import AuthSignup from './AuthSignup';
-import background from '../../assets/media/bg/bg-4.jpg';
-import logo from '../../assets/media/company-logos/logo-2.png';
+import logo from '../../assets/media/logos/logo.png';
 
 
 const Auth = (props) => {
@@ -32,10 +31,10 @@ const Auth = (props) => {
               </div>
             </div>
 
-            <div className="kt-grid__item kt-grid__item--fluid kt-grid__item--center kt-grid kt-grid--ver kt-login__content" style={{ backgroundImage: `url(${background})` }}>
+            <div className="kt-grid__item kt-grid__item--fluid kt-grid__item--center kt-grid kt-grid--ver kt-login__content" style={{ backgroundColor: '#0091ff' }}>
               <div className="kt-login__section">
                 <div className="kt-login__block">
-                  <h3 className="kt-login__title">Join Our Community</h3>
+                  <h3 className="kt-login__title">Sedmic will do the job!</h3>
                   <div className="kt-login__desc">
                         Lorem ipsum dolor sit amet, coectetuer adipiscing
                     <br />elit sed diam nonummy et nibh euismod

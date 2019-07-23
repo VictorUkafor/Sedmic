@@ -16,21 +16,14 @@ class Home extends Component {
       user, history, auth,
     } = this.props;
 
-    message();
-    profile();
-
-    // if (!auth) {
-    //   history.push('/login');
-    // }
-
-    console.log('uerrrr', user);
+    console.log('loggggggggg', localStorage.getItem('auth'));
+    //message();
   }
 
   logout = (event) => {
-    const { history } = this.props;
+    const { history, logOut: logout } = this.props;
     event.preventDefault();
-    logOut();
-    history.push('/login');
+    logout().then(()=> history.push('/login'));
   }
 
 

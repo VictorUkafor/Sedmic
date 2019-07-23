@@ -20,21 +20,14 @@ class VerifyType extends Component {
 
   componentDidMount = () => {
     const {
-      clearMessage: message, history,
-      locationInfo: geoInfo, field,
-      username, tokenSent, setCode,
+      clearMessage: clear,
+      locationInfo: geoInfo,
+      field,
     } = this.props;
 
-    if (!username) {
-      history.push('/signup');
-    }
-
-    if (tokenSent && setCode) {
-      history.push('/account-verification');
-    }
-
-    message();
+    clear();
     geoInfo();
+
     document.title = `Sedmic - Using ${field} for Verification`;
   }
 
@@ -128,12 +121,9 @@ class VerifyType extends Component {
 
     if (checkStatus) {
       this.setState({ isLoading: true });
-      verification(body).then(() => {
-        this.setState(initialState);
-        if (body.phone) {
-          history.push('/account-verification');
-        }
-      }).catch(() => this.setState({ isLoading: false }));
+      verification(body, () => history.push('/account-verification'))
+        .then(() => this.setState(initialState))
+        .catch(() => this.setState({ isLoading: false }));
     }
   }
 
@@ -151,12 +141,12 @@ class VerifyType extends Component {
 
     return (
       <Form
-        title={username && !tokenSent && `Step 2 - Using ${field} for Verification`}
+        title={username && !tokenSent && !isLoading && `Step 2 - Using ${field} for Verification`}
         handleSubmit={this.handleSubmit}
-        successMessage={!tokenSent ? successMessage : 'Check your email for a verification link'}
+        successMessage={!tokenSent ? successMessage : 'Check your email or phone for a verification link or code'}
         errorMessage={errorMessage}
       >
-        {username && field === 'SMS' && !tokenSent
+        {username && field === 'SMS' && !tokenSent && !isLoading
         && (
           <Phone
             placeholder=" Enter your mobile number"
@@ -169,7 +159,7 @@ class VerifyType extends Component {
           />
         )}
 
-        {username && field === 'Email' && !tokenSent
+        {username && field === 'Email' && !tokenSent && !isLoading
         && (
           <Input
             placeholder="Enter your email address"
@@ -183,10 +173,10 @@ class VerifyType extends Component {
         )}
 
 
-        {username && !tokenSent && (
+        {username && !tokenSent && !isLoading && (
           <Button
-            value={field === 'SMS' ? 'Use Email Verification' : 'Use SMS Verification'}
-            styleName={field === 'SMS' ? 'email-button' : 'sms-button'}
+            value={field === 'SMS' ? '<< Use Email Verification' : '<< Use SMS Verification'}
+            styleName="back-button-2"
             onClick={field === 'SMS' ? this.switchToEmail : this.switchToSMS}
           />
         )}
@@ -195,8 +185,8 @@ class VerifyType extends Component {
         {username && !tokenSent && (
           <Button
             value={isLoading ? 'Loading . . .' : submit}
-            styleName={field === 'SMS' ? 'sms-button' : 'email-button'}
             disabled={isLoading}
+            styleName="normal-button-2"
           />
         )}
       </Form>

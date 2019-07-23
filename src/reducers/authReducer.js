@@ -11,7 +11,9 @@ export default (state = initialState, action) => {
     case types.SEND_VERIFICATION:
       return {
         ...state,
-        successMessage: action.payload,
+        successMessage: 'A verification email has been sent for the next step',
+        tokenSent: true,
+        setCode: action.payload,
       };
     case types.SEND_VERIFICATION_ERROR:
       return {
@@ -37,6 +39,8 @@ export default (state = initialState, action) => {
       return {
         ...state,
         tokenUser: action.payload,
+        successMessage: '',
+        errorMessage: '',
       };
     case types.VERIFY_TOKEN_ERROR:
       return {
@@ -56,7 +60,7 @@ export default (state = initialState, action) => {
     case types.SIGNUP_USER:
       return {
         ...state,
-        successMessage: action.payload,
+        successMessage: action.payload.successMessage,
       };
     case types.SIGNUP_USER_ERROR:
       return {
