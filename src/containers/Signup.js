@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { Link } from 'react-router-dom';
 import { signup, clearMessage } from '../actions/authActions';
 import { locationInfo } from '../actions/locationActions';
 import {
@@ -203,7 +204,7 @@ class Signup extends Component {
 
     return (
       <Form
-        title={successMessage ? "" : "Let's get you started!"}
+        title={!successMessage && 'Let\'s get you started!'}
         handleSubmit={this.handleSubmit}
         errorMessage={errorMessage}
         successMessage={successMessage}
@@ -223,7 +224,7 @@ class Signup extends Component {
         {usernameSet && !submit && (
           <Button
             value="Verification via SMS"
-            styleName="normal-button-2 sms-button"
+            styleName="sms-button"
             onClick={this.usingSMS}
           />
         )}
@@ -231,7 +232,7 @@ class Signup extends Component {
         {usernameSet && !submit && (
           <Button
             value="Verification via Email"
-            styleName="normal-button-2 email-button"
+            styleName="email-button"
             onClick={this.usingEmail}
           />
         )}
@@ -259,6 +260,21 @@ class Signup extends Component {
             handleChange={this.handleChange}
             icon="fa fa-envelope"
           />
+        )}
+
+        {(!username)
+        && (
+          <div className="kt-login__extra float-right">
+            <Link
+              to="/login"
+              id="kt_login_forgot"
+              style={{
+                color: '#000',
+                fontWeight: '700',
+              }}
+            >Login Now ?
+            </Link>
+          </div>
         )}
 
 

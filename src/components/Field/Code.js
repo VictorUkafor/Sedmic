@@ -6,12 +6,18 @@ export default (props) => {
   } = props;
 
   return (
-    <div className="form-group ">
+    <div className="form-group">
       <div className="input-group">
         <div className="input-group-prepend">
-          <span className="input-group-text" id="basic-addon1">S-</span>
+          <span
+            className="input-group-text"
+            style={{ color: '#003366', fontWeight: '1000' }}
+            id="basic-addon1"
+          >S-
+          </span>
         </div>
         <input
+          style={{ backgroundColor: '#f7f8fa' }}
           className="form-control"
           type="text"
           placeholder={placeholder}

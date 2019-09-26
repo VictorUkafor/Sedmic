@@ -87,12 +87,14 @@ class CompleteSignup extends Component {
   }
 
   processMobile = () => {
-    const { clearMessage: clear } = this.props;
-
+    const { mobileNumber } = this.state;
+    const { clearMessage: clear, userLocation } = this.props;
+    const { country } = userLocation;
     clear();
 
-    const { mobileNumber } = this.state;
-    const validation = validatePhone(mobileNumber.trim(), false);
+    const digits = { NG: 11 };
+
+    const validation = validatePhone(mobileNumber.trim(), true, digits[country]);
     const { message, status } = validation;
     this.setState({ errors: { mobileNumber: message } });
 
@@ -278,8 +280,7 @@ class CompleteSignup extends Component {
 
     if (checkStatus && token) {
       this.setState({ loading: true });
-      signupEmail(body, token,
-        () => history.push('/home'))
+      signupEmail(body, token, () => history.push('/home'))
         .then(() => this.setState({ loading: false }))
         .catch(() => this.setState({ loading: false }));
     }
@@ -334,10 +335,11 @@ class CompleteSignup extends Component {
       errors, fullName, email, mobileNumber,
       dateOfBirth, password, gender,
       passwordConfirmation, loading,
-      verificationCode, 
+      verificationCode,
     } = this.state;
 
-    return (<Form
+    return (
+      <Form
         title="Complete User Registration"
         handleSubmit={this.handleSubmit}
         errorMessage={errorMessage}
@@ -444,7 +446,8 @@ class CompleteSignup extends Component {
           loading={loading}
           styleName="normal-button-2"
         />
-      </Form>);
+      </Form>
+    );
   }
 }
 

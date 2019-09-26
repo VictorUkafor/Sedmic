@@ -82,7 +82,7 @@ export const validatePhone = (phone, required = true, length = false) => {
     };
   }
 
-  if (length && (phone.length < length)) {
+  if (phone && (phone.length < length)) {
     return {
       message: 'Mobile number must be 11 digits',
       status: false,

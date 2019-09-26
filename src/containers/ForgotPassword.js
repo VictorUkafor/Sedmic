@@ -74,7 +74,6 @@ class ForgotPassword extends Component {
     const {
       successMessage,
       errorMessage,
-      linkSent,
     } = this.props;
 
     const {
@@ -84,13 +83,13 @@ class ForgotPassword extends Component {
 
     return (
       <Form
-        title={!linkSent && 'Forgotten Password ?'}
-        subTitle={!linkSent && 'Enter your username to request for password reset'}
+        title={!successMessage && 'Forgotten Password ?'}
+        subTitle={!successMessage && 'Enter your username to request for password reset'}
         handleSubmit={this.handleSubmit}
         errorMessage={errorMessage}
-        successMessage={!linkSent ? successMessage : 'Password reset link has been sent to your email'}
+        successMessage={successMessage}
       >
-        {!linkSent && (
+        {!successMessage && (
           <Input
             placeholder="Enter your username"
             name="username"
@@ -101,13 +100,13 @@ class ForgotPassword extends Component {
             icon="fa fa-user"
           />
         )}
-        {!linkSent && (
-          <Button
-            value={loading ? 'Loading . . .' : 'Send Request'}
-            disabled={loading || !username || error}
-            styleName="normal-button-2"
-          />
-        )}
+
+        <Button
+          value={loading ? '  Loading . . .' : 'Send Request'}
+          disabled={!username || error}
+          loading={loading}
+          styleName="normal-button-2"
+        />
       </Form>
     );
   }
@@ -118,7 +117,6 @@ function mapStateToProps(state) {
   return {
     successMessage: state.auth.successMessage,
     errorMessage: state.auth.errorMessage,
-    linkSent: state.auth.linkSent,
   };
 }
 

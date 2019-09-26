@@ -22,11 +22,12 @@ export default (props) => {
         {icon && (
           <div className="input-group-prepend">
             <span className="input-group-text" id="basic-addon2">
-              <i className={icon} />
+              <i className={icon} style={{ color: '#003366' }} />
             </span>
           </div>
         )}
         <select
+          style={{ backgroundColor: '#f7f8fa' }}
           className="custom-select form-control"
           name={name}
           id={name}

@@ -16,7 +16,7 @@ const initialState = {
     password: '',
     passwordConfirmation: '',
   },
-  isLoading: false,
+  loading: false,
 };
 
 
@@ -25,14 +25,13 @@ class ResetPassword extends Component {
 
   componentDidMount = () => {
     const {
-      clearMessage: message,
+      clearMessage: clear,
       findResetToken: find, token,
     } = this.props;
 
     find(token);
 
-
-    message();
+    clear();
     document.title = 'Sedmic - Reset Password';
   }
 
@@ -105,37 +104,37 @@ class ResetPassword extends Component {
     };
 
     if (checkStatus) {
-      this.setState({ isLoading: true });
+      this.setState({ loading: true });
       reset(body, token)
-        .then(() => {
-          this.setState(initialState);
-        })
-        .then(() => this.setState({ isLoading: false }));
+        .then(() => this.setState(initialState))
+        .then(() => this.setState({ loading: false }));
     }
   }
 
 
   render() {
     const {
-      successMessage, reset,
-      errorMessage, linkSent,
+      successMessage,
+      errorMessage,
     } = this.props;
 
     const {
-      errors, password, passwordConfirmation, isLoading,
+      errors, password,
+      passwordConfirmation,
+      loading,
     } = this.state;
 
 
     return (
       <Form
-        title={linkSent && reset && 'Reset Password'}
-        subTitle={linkSent && reset && 'Please enter your new password twice'}
+        title={(!successMessage && !errorMessage) && 'Reset Password'}
+        subTitle={(!successMessage && !errorMessage) && 'Please enter your new password twice'}
         handleSubmit={this.handleSubmit}
         errorMessage={errorMessage}
         successMessage={successMessage}
       >
 
-        {linkSent && reset && (
+        {(!successMessage && !errorMessage) && (
           <Input
             placeholder="Enter your new password"
             name="password"
@@ -147,7 +146,8 @@ class ResetPassword extends Component {
             icon="fa fa-lock"
           />
         )}
-        {linkSent && reset && (
+
+        {(!successMessage && !errorMessage) && (
           <Input
             placeholder="Enter password confirmation"
             name="passwordConfirmation"
@@ -159,13 +159,13 @@ class ResetPassword extends Component {
             icon="fa fa-lock"
           />
         )}
-        {linkSent && reset && (
-          <Button
-            value={isLoading ? 'Loading . . .' : 'Reset Password'}
-            disabled={isLoading}
-            styleName="normal-button-2"
-          />
-        )}
+
+        <Button
+          value={loading ? '  Loading . . .' : 'Reset Password'}
+          disabled={!password || !passwordConfirmation}
+          loading={loading}
+          styleName="normal-button-2"
+        />
 
       </Form>
     );
@@ -176,13 +176,12 @@ function mapStateToProps(state) {
   return {
     successMessage: state.auth.successMessage,
     errorMessage: state.auth.errorMessage,
-    linkSent: state.auth.linkSent,
-    reset: state.auth.reset,
   };
 }
 
 export default connect(mapStateToProps,
   {
-
-    clearMessage, resetPassword, findResetToken,
+    clearMessage,
+    resetPassword,
+    findResetToken,
   })(ResetPassword);

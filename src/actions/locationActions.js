@@ -4,7 +4,7 @@ import * as types from './actionTypes';
 export const locationInfo = () => async (dispatch) => {
   try {
     const location = await axios.get('https://ipapi.co/json/');
-    console.log('location ... .', location.data);
+    
     dispatch({
       type: types.CURRENT_LOCATION,
       payload: location.data,

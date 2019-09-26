@@ -31,7 +31,10 @@ const Auth = (props) => {
               </div>
             </div>
 
-            <div className="kt-grid__item kt-grid__item--fluid kt-grid__item--center kt-grid kt-grid--ver kt-login__content" style={{ backgroundColor: '#0091ff' }}>
+            <div
+              className="kt-grid__item kt-grid__item--fluid kt-grid__item--center kt-grid kt-grid--ver kt-login__content"
+              style={{ backgroundColor: '#003366' }}
+            >
               <div className="kt-login__section">
                 <div className="kt-login__block">
                   <h3 className="kt-login__title">Sedmic will do the job!</h3>

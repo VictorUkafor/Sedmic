@@ -36,15 +36,6 @@ export const signupViaEmail = (body, token, callback) => async (dispatch) => {
   try {
     const res = await axios.post(`${api}/auth/confirm-email/${token}`, body);
 
-    if (res.data.user.account_type !== 'diamond') {
-      dispatch({
-        type: types.SIGNUP_USER,
-        payload: res.data.successMessage,
-      });
-
-      callback();
-    }
-
     if (res.data.user.account_type === 'diamond') {
       localStorage.setItem('authToken', res.data.token);
       localStorage.setItem('auth', true);
@@ -54,6 +45,14 @@ export const signupViaEmail = (body, token, callback) => async (dispatch) => {
         payload: res.data,
       });
 
+      callback();
+    }
+
+    if (res.data.user.account_type !== 'diamond') {
+      dispatch({
+        type: types.SIGNUP_USER,
+        payload: res.data.successMessage,
+      });
     }
   } catch (e) {
     dispatch({
@@ -68,14 +67,6 @@ export const signupViaSMS = (body, callback) => async (dispatch) => {
   try {
     const res = await axios.post(`${api}/auth/confirm-sms`, body);
 
-    if (res.data.user.account_type !== 'diamond') {
-      dispatch({
-        type: types.SIGNUP_USER,
-        payload: res.data.successMessage,
-      });
-
-    }
-
     if (res.data.user.account_type === 'diamond') {
       localStorage.setItem('authToken', res.data.token);
       localStorage.setItem('auth', true);
@@ -86,6 +77,13 @@ export const signupViaSMS = (body, callback) => async (dispatch) => {
       });
 
       callback();
+    }
+
+    if (res.data.user.account_type !== 'diamond') {
+      dispatch({
+        type: types.SIGNUP_USER,
+        payload: res.data.successMessage,
+      });
     }
   } catch (e) {
     dispatch({
@@ -112,8 +110,8 @@ export const loginUser = (body, callback) => async (dispatch) => {
   } catch (e) {
     dispatch({
       type: types.LOGIN_USER_ERROR,
-      payload: e.response.data.errorMessage || 
-      'There was an error processing this request. Please try again',
+      payload: e.response.data.errorMessage
+      || 'There was an error processing this request. Please try again',
     });
   }
 };
@@ -169,7 +167,6 @@ export const forgotPassword = (body) => async (dispatch) => {
   try {
     const res = await axios.post(`${api}/auth/password-reset/request`, body);
 
-    localStorage.setItem('linkSent', true);
     dispatch({
       type: types.FORGOT_PASSWORD,
       payload: res.data.successMessage,

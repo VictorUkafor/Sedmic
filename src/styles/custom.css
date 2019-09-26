@@ -1,41 +1,22 @@
 body {
-    /* font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; */
     font-family: Quicksand;
-    /* background-color: #fff; */
   }
 
-
-  .kt-login.kt-login--v6 .btn {
-/* font-weight: 500; */
-}
-
 .sms-button{
-
     float: right;
 }
-
-.sms-button:hover{
-
-}
-
 
 .email-button{
     float: left;
 }
-
-.email-button:hover{
-}
-
 
 .custom-file-label-auth {
     border: 1px solid #fff;
     margin-top: 5px;
 }
 
-
 .input-group-text {
   border: 1px solid #fff; 
-  background-color: #fff;
   border-bottom: 1px solid rgba(235,237,242,.8);
 }
 
@@ -45,19 +26,22 @@ body {
     height: 100vh;
 }
 
-.kt-login.kt-login--v6 .btn {
+.kt-login.kt-login--v6 .btn, .kt-login.kt-login--v6 .btn:active {
     padding-left: 2.5rem;
     padding-right: 2.5rem;
-    /* background-color: #2e30b7; */
+    background-color: #003366;
+    border: 1px solid #003366;
 }
 
 
-.kt-login.kt-login--v6 .kt-login__aside .kt-login__wrapper .kt-login__container .kt-login__head .kt-login__title {
+.kt-login.kt-login--v6 .kt-login__aside .kt-login__wrapper 
+.kt-login__container .kt-login__head .kt-login__title {
     color: #000;
     font-weight: 800;
 }
 
-.kt-login.kt-login--v6 .kt-login__aside .kt-login__wrapper .kt-login__container .kt-login__head .kt-login__desc {
+.kt-login.kt-login--v6 .kt-login__aside .kt-login__wrapper 
+.kt-login__container .kt-login__head .kt-login__desc {
     color: #000;
     font-weight: 800;
 }
@@ -76,47 +60,8 @@ body {
 
 }
 
-.normal-button-1{
-    color: #fff;
-    background-color: #fc5897;
-    border: 1px solid #fc5897;
-    font-weight: 600;
+
+.kt-login__logo img{
+    width: 18%;
 }
 
-.normal-button-1:hover{
-    color: #fff;
-    background-color: #fc5897;
-    border: 1px solid #fc5897;
-    font-weight: 600;
-    opacity: 0.9;
-}
-
-
-.normal-button-2{
-    color: #fff;
-    background-color: #0091ff;
-    border: 1px solid #0091ff;
-    font-weight: 600;
-}
-
-.normal-button-2:hover{
-    color: #fff;
-    background-color: #0091ff;
-    border: 1px solid #0091ff;
-    font-weight: 600;
-    opacity: 0.9;
-}
-
-.back-button{
-    color: #0091ff;
-    background-color: #fff;
-    border: 1px solid #0091ff;
-    float: left;
-    font-weight: 600;
-}
-
-.back-button:hover{
-    color: #fff;
-    background-color: #0091ff;
-    border: 1px solid #0091ff;
-}

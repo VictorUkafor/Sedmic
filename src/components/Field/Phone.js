@@ -21,9 +21,15 @@ export default (props) => {
           </span>
         </div>
         <div className="input-group-prepend">
-          <span className="input-group-text" id="basic-addon1">{country_calling_code}</span>
+          <span
+            className="input-group-text"
+            style={{ color: '#003366' }}
+            id="basic-addon1"
+          >{country_calling_code}
+          </span>
         </div>
         <input
+          style={{ backgroundColor: '#f7f8fa' }}
           className="form-control"
           type="text"
           placeholder={placeholder}

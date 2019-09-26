@@ -145,18 +145,20 @@ class Login extends Component {
         />
 
         <div className="kt-login__extra">
-          <label className="kt-checkbox" style={{ color: '#000', fontWeight: '700' }}>
-            <input type="checkbox" name="remember" /> Remember me
-            <span />
-          </label>
+          <Link
+            to="/signup"
+            id="kt_login_forgot"
+            style={{ color: '#000', fontWeight: '700' }}
+          >Not Registered ?
+          </Link>
 
           <Link
             to="/forgot-password"
             id="kt_login_forgot"
+            className="kt_login_forgot"
             style={{ color: '#000', fontWeight: '700' }}
           >Forget Password ?
           </Link>
-
         </div>
 
         <Button

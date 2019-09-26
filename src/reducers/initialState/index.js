@@ -10,7 +10,6 @@ export default {
   authToken: localStorage.getItem('authToken') || false,
   reset: false,
   tokenSent: localStorage.getItem('tokenSent') || false,
-  linkSent: localStorage.getItem('linkSent') || false,
   churchCreated: localStorage.getItem('churchCreated') || false,
   activationToken: localStorage.getItem('activation_token') || null,
 };

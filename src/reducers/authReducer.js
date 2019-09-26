@@ -73,7 +73,6 @@ export default (state = initialState, action) => {
       return {
         ...state,
         successMessage: action.payload,
-        linkSent: true,
       };
     case types.FORGOT_PASSWORD_ERROR:
       return {
