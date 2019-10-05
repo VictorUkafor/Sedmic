@@ -11,9 +11,13 @@ export default (props) => {
         <div className="input-group-prepend">
           <span
             className="input-group-text"
-            style={{ color: '#003366', fontWeight: '1000' }}
+            style={{
+              color: '#003366',
+              backgroundColor: '#dee0e1',
+              fontWeight: '1000',
+            }}
             id="basic-addon1"
-          >S-
+          >S -
           </span>
         </div>
         <input

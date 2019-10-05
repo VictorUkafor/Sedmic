@@ -42,6 +42,7 @@ const initialState = {
     passwordConfirmation: '',
     verificationCode: '',
   },
+  verified: false,
   loading: false,
 };
 
@@ -52,11 +53,21 @@ class CompleteSignup extends Component {
     const {
       clearMessage: clear,
       locationInfo: geoInfo,
+      verifyToken: tokenVerify,
+      location: { search },
     } = this.props;
 
-    clear();
+    const { token } = queryString.parse(search);
 
+    clear();
     geoInfo();
+
+    if (token) {
+      tokenVerify(token)
+        .then(() => this.setState({ verified: true }))
+        .catch(() => this.setState({ verified: false }));
+    }
+
     document.title = 'Sedmic - Complete User Registration';
   }
 
@@ -187,14 +198,26 @@ class CompleteSignup extends Component {
 
   processCode = () => {
     const { verificationCode } = this.state;
-    const { clearMessage: clear } = this.props;
+    const {
+      clearMessage: clear,
+      verifyCode: codeVerify,
+    } = this.props;
+
     clear();
+    this.setState({ verified: false });
 
     const validation = validateCode(verificationCode.trim());
     const { message, status } = validation;
     this.setState({ errors: { verificationCode: message } });
 
-    return { status };
+
+    if (status) {
+      this.setState({ loading: true });
+      codeVerify(verificationCode.trim())
+        .then(() => this.setState({
+          verified: true, loading: false,
+        })).catch(() => this.setState(initialState));
+    }
   }
 
 
@@ -218,11 +241,6 @@ class CompleteSignup extends Component {
     } = this.state;
 
     let checkStatus = true;
-
-    if (checkStatus && !token) {
-      const { status } = this.processCode();
-      checkStatus = status;
-    }
 
     if (checkStatus) {
       const { status } = this.processFullName();
@@ -275,21 +293,21 @@ class CompleteSignup extends Component {
     body.append('date_of_birth', date);
     body.append('password', password.trim());
     body.append('password_confirmation', passwordConfirmation.trim());
-    body.append('verification_code', verificationCode.trim());
+    body.append('verification_code', `S-${verificationCode.trim()}`);
 
 
     if (checkStatus && token) {
       this.setState({ loading: true });
       signupEmail(body, token, () => history.push('/home'))
-        .then(() => this.setState({ loading: false }))
+        .then(() => this.setState({ loading: false, verified: true }))
         .catch(() => this.setState({ loading: false }));
     }
 
     if (checkStatus && verificationCode) {
       this.setState({ loading: true });
       signupSMS(body, () => history.push('/home'))
-        .then(() => this.setState({ loading: false }))
-        .catch(() => this.setState({ loading: false }));
+        .then(() => this.setState({ loading: false, verified: true }))
+        .catch(() => this.setState({ loading: false, verified: true }));
     }
   }
 
@@ -335,10 +353,18 @@ class CompleteSignup extends Component {
       errors, fullName, email, mobileNumber,
       dateOfBirth, password, gender,
       passwordConfirmation, loading,
-      verificationCode,
+      verificationCode, verified,
     } = this.state;
 
-    return (
+
+    return !verified && token ? (
+      <span
+        className="spinner-border spinner-border-lg"
+        role="status"
+        style={{ marginLeft: '50%', color: '#003366' }}
+        aria-hidden="true"
+      />
+    ) : (
       <Form
         title="Complete User Registration"
         handleSubmit={this.handleSubmit}
@@ -346,7 +372,7 @@ class CompleteSignup extends Component {
         successMessage={successMessage}
       >
 
-        {!token && (
+        {!token && (!verified || errorMessage) && !loading && (
           <Code
             placeholder="Enter verification code"
             name="verificationCode"
@@ -358,17 +384,29 @@ class CompleteSignup extends Component {
           />
         )}
 
-        <Input
-          placeholder="Enter your full name"
-          name="fullName"
-          value={fullName}
-          error={errors.fullName || fullNameError}
-          onKey={this.processFullName}
-          handleChange={this.handleChange}
-          icon="fa fa-user"
-        />
 
-        { token && (
+        {!token && loading && !verified && (
+          <span
+            className="spinner-border spinner-border-lg"
+            role="status"
+            style={{ marginLeft: '50%', color: '#003366' }}
+            aria-hidden="true"
+          />
+        )}
+
+        {!errorMessage && !successMessage && verified && (
+          <Input
+            placeholder="Enter your full name"
+            name="fullName"
+            value={fullName}
+            error={errors.fullName || fullNameError}
+            onKey={this.processFullName}
+            handleChange={this.handleChange}
+            icon="fa fa-user"
+          />
+        )}
+
+        {!errorMessage && !successMessage && token && verified && (
           <Phone
             placeholder="Enter your mobile number"
             name="mobileNumber"
@@ -378,9 +416,9 @@ class CompleteSignup extends Component {
             onKey={this.processMobile}
             handleChange={this.handleChange}
           />
-        ) }
+        )}
 
-        {!token && (
+        {!errorMessage && !successMessage && !token && verified && (
           <Input
             placeholder=" Enter your email address"
             name="email"
@@ -392,56 +430,71 @@ class CompleteSignup extends Component {
           />
         )}
 
-        <Select
-          selectMessage="Choose your gender"
-          name="gender"
-          value={gender}
-          error={errors.gender || genderError}
-          onKey={this.processImage}
-          handleChange={this.handleChange}
-          options={['Female', 'Male']}
-          icon="fa fa-venus-mars"
-        />
-        <Input
-          placeholder="Enter your date of birth (format: 'dd/mm/yyyy')"
-          name="dateOfBirth"
-          value={dateOfBirth}
-          error={errors.dateOfBirth || DOBError}
-          onKey={this.processDOB}
-          handleChange={this.handleChange}
-          icon="fa fa-table"
-        />
-        <Image
-          imageMessage="Upload your photo"
-          name="image"
-          error={errors.image || imgError}
-          handleChange={this.handleFile}
-          icon="fa fa-venus-image"
-        />
-        <Input
-          placeholder="Enter your password"
-          name="password"
-          type="password"
-          value={password}
-          error={errors.password || passwordError}
-          onKey={this.processPassword}
-          handleChange={this.handleChange}
-          icon="fa fa-lock"
-        />
-        <Input
-          placeholder="Enter your password confirmation"
-          name="passwordConfirmation"
-          type="password"
-          value={passwordConfirmation}
-          error={errors.passwordConfirmation || passwordConfError}
-          onKey={this.processPasswordConfirmation}
-          handleChange={this.handleChange}
-          icon="fa fa-lock"
-        />
+        {!errorMessage && !successMessage && verified && (
+          <Select
+            selectMessage="Choose your gender"
+            name="gender"
+            value={gender}
+            error={errors.gender || genderError}
+            onKey={this.processImage}
+            handleChange={this.handleChange}
+            options={['Female', 'Male']}
+            icon="fa fa-venus-mars"
+          />
+        )}
+
+        {!errorMessage && !successMessage && verified && (
+          <Input
+            placeholder="Enter your date of birth (format: 'dd/mm/yyyy')"
+            name="dateOfBirth"
+            value={dateOfBirth}
+            error={errors.dateOfBirth || DOBError}
+            onKey={this.processDOB}
+            handleChange={this.handleChange}
+            icon="fa fa-table"
+          />
+        )}
+
+        {!errorMessage && !successMessage && verified && (
+          <Image
+            imageMessage="Upload your photo"
+            name="image"
+            error={errors.image || imgError}
+            handleChange={this.handleFile}
+            icon="fa fa-venus-image"
+          />
+        )}
+
+        {!errorMessage && !successMessage && verified && (
+          <Input
+            placeholder="Enter your password"
+            name="password"
+            type="password"
+            value={password}
+            error={errors.password || passwordError}
+            onKey={this.processPassword}
+            handleChange={this.handleChange}
+            icon="fa fa-lock"
+          />
+        )}
+
+        {!errorMessage && !successMessage && verified && (
+          <Input
+            placeholder="Enter your password confirmation"
+            name="passwordConfirmation"
+            type="password"
+            value={passwordConfirmation}
+            error={errors.passwordConfirmation || passwordConfError}
+            onKey={this.processPasswordConfirmation}
+            handleChange={this.handleChange}
+            icon="fa fa-lock"
+          />
+        )}
+
         <Button
           value={loading ? '  Loading . . .' : 'Complete Signup'}
           disabled={!fullName || !dateOfBirth
-          || !password || !passwordConfirmation || !gender
+          || !password || !passwordConfirmation || !gender || errorMessage
           || (token && !mobileNumber) || (!token && !email && !verificationCode)}
           loading={loading}
           styleName="normal-button-2"

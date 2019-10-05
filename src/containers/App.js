@@ -11,12 +11,13 @@ import ResetPasswordPage from '../views/ResetPasswordPage';
 import CompleteSignupPage from '../views/CompleteSignupPage';
 import ChurchRegistrationPage from '../views/ChurchRegistrationPage';
 import HomePage from '../views/HomePage';
+import Home from '../views/Home';
 import '../styles/styles.css';
 
 export default () => (
   <BrowserRouter>
     <div>
-      <Route exact path="/" component={Index} />
+      <Route exact path="/" component={Home} />
       <Route exact path="/signup" component={AuthSignup(SignupPage)} />
       <Route exact path="/login" component={LoginPage} />
       <Route exact path="/forgot-password" component={NotAuth(ForgotPasswordPage)} />

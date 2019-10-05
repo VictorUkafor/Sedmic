@@ -22,7 +22,13 @@ export default (props) => {
         {icon && (
           <div className="input-group-prepend">
             <span className="input-group-text" id="basic-addon2">
-              <i className={icon} style={{ color: '#003366' }} />
+              <i
+                className={icon}
+                style={{
+                  backgroundColor: '#dee0e1',
+                  color: '#003366',
+                }}
+              />
             </span>
           </div>
         )}

@@ -17,6 +17,7 @@ const initialState = {
     passwordConfirmation: '',
   },
   loading: false,
+  verified: false,
 };
 
 
@@ -29,7 +30,9 @@ class ResetPassword extends Component {
       findResetToken: find, token,
     } = this.props;
 
-    find(token);
+    find(token)
+      .then(() => this.setState({ verified: true }))
+      .catch(() => this.setState({ verified: false }));
 
     clear();
     document.title = 'Sedmic - Reset Password';
@@ -121,11 +124,19 @@ class ResetPassword extends Component {
     const {
       errors, password,
       passwordConfirmation,
-      loading,
+      loading, verified,
     } = this.state;
 
 
-    return (
+    return !verified ? (
+      <span
+        className="spinner-border spinner-border-lg"
+        role="status"
+        style={{ marginLeft: '50%', color: '#003366' }}
+        aria-hidden="true"
+      />
+    ) : (
+
       <Form
         title={(!successMessage && !errorMessage) && 'Reset Password'}
         subTitle={(!successMessage && !errorMessage) && 'Please enter your new password twice'}

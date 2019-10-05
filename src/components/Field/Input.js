@@ -17,7 +17,10 @@ export default (props) => {
           </div>
         )}
         <input
-          style={{ backgroundColor: '#f7f8fa' }}
+          style={{
+            backgroundColor: '#dee0e1',
+            marginBottom: '5px',
+          }}
           className="form-control"
           type={type || 'text'}
           placeholder={placeholder}

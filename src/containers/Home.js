@@ -16,7 +16,6 @@ class Home extends Component {
       user, history, auth,
     } = this.props;
 
-    console.log('loggggggggg', localStorage.getItem('auth'));
     clear();
   }
 

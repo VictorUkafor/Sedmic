@@ -23,7 +23,11 @@ export default (props) => {
         <div className="input-group-prepend">
           <span
             className="input-group-text"
-            style={{ color: '#003366' }}
+            style={{
+              backgroundColor: '#dee0e1',
+              color: '#003366',
+              fontWeight: '1000',
+            }}
             id="basic-addon1"
           >{country_calling_code}
           </span>

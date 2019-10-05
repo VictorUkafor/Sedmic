@@ -117,17 +117,12 @@ export const loginUser = (body, callback) => async (dispatch) => {
 };
 
 
-export const verifyToken = (token, callback) => async (dispatch) => {
+export const verifyToken = (token) => async (dispatch) => {
   try {
-    const res = await axios.get(`${api}/auth/confirm-token?token=${token}`);
-
-    localStorage.setItem('activation_token', token);
+    await axios.get(`${api}/auth/token-confirmation?token=${token}`);
     dispatch({
       type: types.VERIFY_TOKEN,
-      payload: res.data.user,
     });
-
-    callback();
   } catch (e) {
     dispatch({
       type: types.VERIFY_TOKEN_ERROR,
@@ -137,17 +132,12 @@ export const verifyToken = (token, callback) => async (dispatch) => {
 };
 
 
-export const verifyCode = (code, callback) => async (dispatch) => {
+export const verifyCode = (code) => async (dispatch) => {
   try {
-    const res = await axios.get(`${api}/auth/confirm-code?code=${code}`);
-
-    localStorage.setItem('activation_token', code);
-
+    await axios.get(`${api}/auth/token-confirmation?code=S-${code}`);
     dispatch({
       type: types.VERIFY_CODE,
-      payload: res.data.user,
     });
-    callback();
   } catch (e) {
     dispatch({
       type: types.VERIFY_CODE_ERROR,

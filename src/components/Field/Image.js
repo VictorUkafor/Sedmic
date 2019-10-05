@@ -18,7 +18,7 @@ export default (props) => {
           </div>
         )}
         <input
-          style={{ backgroundColor: '#f7f8fa' }}
+          style={{ backgroundColor: '#dee0e1' }}
           className="custom-file-input"
           name={name}
           type="file"
